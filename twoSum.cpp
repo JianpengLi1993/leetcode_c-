@@ -10,7 +10,7 @@
 因为 nums[0] + nums[1] = 2 + 7 = 9
 所以返回 [0, 1]
 /*********************************************************************************************************/
-
+//方法一：在遍历的同时，进行筛选，这样快捷
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
@@ -24,6 +24,27 @@ public:
             }
             record[nums[i]] = i;
             
+        }
+        return {};
+    }
+};
+
+
+//方法二：先完整构建map键值对，再从中寻找合适的组合，但需要注意有可能出现一个元素被两次使用的情况，所以m[target-nums[i]]!=i这个条件必不可少
+
+class Solution1 {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+
+        unordered_map<int,int> m;
+
+        for(int i=0;i<nums.size();i++)
+            m[nums[i]]=i;   //向map中添加元素
+        
+        for(int i=0;i<nums.size();i++)
+        {
+            if(m.find(target-nums[i])!=m.end()&&m[target-nums[i]]!=i)//m中存在对应的键值，并且不为i
+                return {i,m[target-nums[i]]};
         }
         return {};
     }
