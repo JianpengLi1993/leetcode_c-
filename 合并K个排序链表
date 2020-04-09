@@ -1,0 +1,95 @@
+/***************************************************************************/
+合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。
+
+示例:
+
+输入:
+[
+  1->4->5,
+  1->3->4,
+  2->6
+]
+输出: 1->1->2->3->4->4->5->6
+
+
+这里我不知道计算是否正确，如果不对还望指出~~
+方法1： 建立优先队列（最大堆或者最小堆均可），不过不需要全部元素一次性入队；只需要让链表头元素入队即可，弹出该元素后，该链表往后移。
+https://leetcode-cn.com/problems/merge-k-sorted-lists/solution/c-you-xian-dui-lie-liang-liang-he-bing-fen-zhi-he-/
+
+空间复杂度 O(k)，时间复杂度 O(nlog(k))；n是所有节点个数，k是链表数
+/***************************************************************************/
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ 
+ 优先级队列用法：https://blog.csdn.net/weixin_36888577/article/details/79937886
+ auto的用法：https://blog.csdn.net/qq_42957923/article/details/90107840
+ 
+class Solution {
+public:
+    // 小根堆的回调函数
+    struct cmp{  
+       bool operator()(ListNode *a,ListNode *b){
+          return a->val > b->val;
+       }};
+
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        priority_queue<ListNode*, vector<ListNode*>, cmp> pri_queue;
+        // 建立大小为k的小根堆
+        for(auto elem : lists){
+            if(elem) pri_queue.push(elem);
+        }
+        // 可以使用哑节点/哨兵节点
+        ListNode dummy(-1);
+        ListNode* p = &dummy;
+        // 开始出队
+        while(!pri_queue.empty()){
+            p->next = pri_queue.top(); 
+            pri_queue.pop(); 
+            p = p->next;
+            if(p->next) pri_queue.push(p->next);
+        }
+        return dummy.next;  
+    }
+};
+
+
+方案2：
+//////////////////////////////////////////////////////
+在做这个题前，我们肯定会遇到 21. 合并两个有序链表 这道题，不了解的伙伴儿可以先移步了解一下。
+简单的说，合并两个有序链表可以使用迭代或者递归来完成，思路是一样的；这里就不多做介绍了。
+对于合并K个链表，不难想到我们可以从头开始两两合并。
+
+时间复杂度 O(kn) ，空间复杂度 O(1)【不考虑递归调用栈】
+//////////////////////////////////////////////////////
+
+class Solution {
+public:
+    // 合并两个有序链表
+    ListNode* merge(ListNode* p1, ListNode* p2){
+        if(!p1) return p2;
+        if(!p2) return p1;
+        if(p1->val <= p2->val){
+            p1->next = merge(p1->next, p2);
+            return p1;
+        }else{
+            p2->next = merge(p1, p2->next);
+            return p2;
+        }
+    }
+
+     ListNode* mergeKLists(vector<ListNode*>& lists) {
+        if(lists.size() == 0) return nullptr;
+        ListNode* head = lists[0];
+        for(int i = 1; i<lists.size(); ++i){
+            if(lists[i]) head = merge(head, lists[i]);
+        }
+        return head;  
+    }
+};
+
