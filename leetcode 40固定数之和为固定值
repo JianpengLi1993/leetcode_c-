@@ -47,7 +47,8 @@ public:
         }
         for (int i = start; i <= end; i++){        
             tmp.push_back(candidates[i]);        
-            combination(candidates, i + 1, end, target - candidates[i], tmp, result);                   tmp.pop_back();        
+            combination(candidates, i + 1, end, target - candidates[i], tmp, result);                   
+            tmp.pop_back();        
             //在排序的基础上，通过这一步，在有多个相同元素是，保证同一层的分支中，只让挨着的若干相同元素中的"第一个元素"进行向下发展
             //确保不会出现重复组合， 
             while(i < end && candidates[i] == candidates[i+1]){
