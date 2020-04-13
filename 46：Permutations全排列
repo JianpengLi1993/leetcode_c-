@@ -37,6 +37,74 @@ public:
 };
 
 
+//如果给定的序列中包含了重复元素，此时上面的代码无法去重，因此需要做两点改动
+1）对输入先排序
+2）对回溯法中每一层分支创造前要先判断，当前元素是否和前一个元素相同
+class Solution {
+public:
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> res;
+		vector<int> curr;
+		vector<bool> flags(nums.size(), false);
+        sort(nums.begin(),nums.end());
+		backtracking(nums, res, curr, flags);
+		return res;
+    }
+
+    void backtracking(vector<int>& nums, vector<vector<int>>& res, vector<int>& curr, vector<bool>& flags) {
+		if (nums.size() == curr.size()) {
+			res.push_back(curr);
+		}
+		else {
+			for (int i = 0; i < nums.size(); ++i) {
+				if (flags[i])
+					continue;
+                		if(i>0){
+                    			if(nums[i]==nums[i-1] && flags[i-1])
+                        			continue;
+                		}
+                
+				curr.push_back(nums[i]);
+				flags[i] = true;
+				backtracking(nums, res, curr,flags);
+				flags[i] = false;
+				curr.pop_back();
+			}
+		}
+	}
+};
+
+
+class Solution1 {
+public:
+	vector<vector<int>> permute(vector<int>& nums) {
+		vector<vector<int>> res;
+		vector<int> curr;
+		vector<bool> flags(nums.size(), false);
+		backtracking(nums, res, curr, flags);
+		return res;
+	}
+
+	void backtracking(vector<int>& nums, vector<vector<int>>& res, vector<int>& curr, vector<bool>& flags) {
+		if (nums.size() == curr.size()) {
+			res.push_back(curr);
+		}
+		else {
+			for (int i = 0; i < nums.size(); ++i) {
+				if (flags[i])
+					continue;
+				curr.push_back(nums[i]);
+				flags[i] = true;
+				backtracking(nums, res, curr,flags);
+				flags[i] = false;
+				curr.pop_back();
+			}
+		}
+	}
+};
+
+
+
 
 方案2：利用STL自带的下一个排列函数或者使用上一题我们自己写的next_permutation函数。
 函数原型：
