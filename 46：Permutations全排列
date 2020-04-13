@@ -75,38 +75,10 @@ public:
 };
 
 
-class Solution1 {
-public:
-	vector<vector<int>> permute(vector<int>& nums) {
-		vector<vector<int>> res;
-		vector<int> curr;
-		vector<bool> flags(nums.size(), false);
-		backtracking(nums, res, curr, flags);
-		return res;
-	}
-
-	void backtracking(vector<int>& nums, vector<vector<int>>& res, vector<int>& curr, vector<bool>& flags) {
-		if (nums.size() == curr.size()) {
-			res.push_back(curr);
-		}
-		else {
-			for (int i = 0; i < nums.size(); ++i) {
-				if (flags[i])
-					continue;
-				curr.push_back(nums[i]);
-				flags[i] = true;
-				backtracking(nums, res, curr,flags);
-				flags[i] = false;
-				curr.pop_back();
-			}
-		}
-	}
-};
-
-
 
 
 方案2：利用STL自带的下一个排列函数或者使用上一题我们自己写的next_permutation函数。
+本方案本身兼容序列中含有重复元素的情况。
 函数原型：
 template <class BidirectionalIterator>提供升序
 　　
