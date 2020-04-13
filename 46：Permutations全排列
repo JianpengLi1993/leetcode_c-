@@ -60,6 +60,8 @@ public:
 				if (flags[i])
 					continue;
                 		if(i>0){
+				//这个判断是关键，但是属于歪打正着，并不是控制每一层只能一个去发展，
+				//而是只让相同元素的最后一个元素去充当这一层的元素.
                     			if(nums[i]==nums[i-1] && flags[i-1])
                         			continue;
                 		}
