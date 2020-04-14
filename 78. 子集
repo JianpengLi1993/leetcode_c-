@@ -59,4 +59,23 @@ public:
     }
 };
 
+/************************************************/
+给定一个可能含相同整数的集合，返回其所有的子集。
 
+只需要把方案一中的递归代码加一个约束即可。即一层只用一个相同的元素，由于有了排序的基础，所以相同元素必定在一起
+/************************************************/
+    void helper(vector<vector<int> > &results,
+                vector<int> &subset,
+                vector<int> &nums,
+                int start) {
+        results.push_back(subset);
+        
+        for (int i = start; i < nums.size(); i++) {
+            if(i != start && nums[i]==nums[i-1]){//i != start 确保只约束本层，而不约束跨层。
+                continue;
+            }
+            subset.push_back(nums[i]);
+            helper(results, subset, nums, i + 1);
+            subset.pop_back();
+        }
+    }
