@@ -43,6 +43,28 @@ public:
         return 0;
 
     }
+    //二分法本身可以泛化为解决：一个数组，让你找数组中第一个/最后一个满足某个条件的位置，这个位置之前是OOOO  O\X  XXXXXX,
+    //本题中，旋转点之前的元素都大于整个序列的最后一个元素，旋转点后面的元素都小于整个序列最尾部的元素，
+    //因此本身找这个旋转点的函数，可以理解成一个理由二分法找first小于整个序列最尾部的思想。即将[5671234]拆为[567]、[1]、[234]三个序列，
+    //要找的是[1]的位置，而1是第一个小于4的元素，可以用二分法找。
+    int find_rotate_index(int left, int right){
+        if(nums[left]<nums[right])
+            return 0;
+        int end=right;
+        while(left+1<right){
+            int pivot=left+(right-left)/2;
+            if(nums[pivot]>nums[end]){
+                left=pivot;
+            }else{
+                right=pivot;
+            }
+        }
+        if(nums[left]<nums[right]){
+            return left;
+        }else{
+            return right;
+        }
+    }
 
     int binSearch(int left, int right) {
     /*
