@@ -20,7 +20,7 @@
 输入: nums = [4,5,6,7,0,1,2], target = 3
 输出: -1
 /************************************************************/
-
+方案一：先找到旋转点，再二分
 class Solution {
 public:
     vector<int>nums;
@@ -114,3 +114,50 @@ public:
     }
 };
 
+
+方案二：直接二分法，不刻意要求满足OOOO OX XXXXXX,只要一次操作能判断一半数据就可以。
+public class Solution {
+    public int search(int[] A, int target) {
+        if (A == null || A.length == 0) {
+            return -1;
+        }
+
+        int start = 0;
+        int end = A.length - 1;
+        int mid;
+        
+        while (start + 1 < end) {
+            mid = start + (end - start) / 2;
+            if (A[mid] == target) {
+                return mid;
+            }
+            //先判断mid点在前半段序列还是后半段序列
+            if (A[start] < A[mid]) {
+                // situation 1, 此时target在前半段序列中的start--mid中间
+                if (A[start] <= target && target <= A[mid]) {
+                    end = mid;
+                } else {
+                //situation 3,target在mid--end中
+                    start = mid;
+                }
+            }//此时mid在后半段 
+            else {
+                // situation 2, 此时target在后半段序列中的mid--end中间
+                if (A[mid] <= target && target <= A[end]) {
+                    start = mid;
+                }// situation 4,target在start--mid中
+                else {
+                    end = mid;
+                }
+            }
+        } // while
+        
+        if (A[start] == target) {
+            return start;
+        }
+        if (A[end] == target) {
+            return end;
+        }
+        return -1;
+    }
+}
