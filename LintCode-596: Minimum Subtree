@@ -53,6 +53,7 @@ class Solution {
     public:
     TreeNode findSubtree(TreeNode* root) {
         ResultType result = helper(root);
+        //从返回值类型中选取有用的成员变量
         return result->minSubtree;
     }
     //1.确定递归函数返回值：返回以root为根的子树对应的ResultType
@@ -66,18 +67,18 @@ class Solution {
         //存放当前节点对应的子树和sum，而minSubtree和minSum还需要重新判定后才能确定
         ResultType result = new ResultType(
             node,
-            leftResult.sum + rightResult.sum + node.val,
-            leftResult.sum + rightResult.sum + node.val
+            leftResult->sum + rightResult->sum + node->val,
+            leftResult->sum + rightResult->sum + node->val
         );
         //2.2整合，找到左右两个子树中最小和的子树节点以及对应的子树和
-        if (leftResult.minSum <= result.minSum) {
-            result.minSum = leftResult.minSum;
-            result.minSubtree = leftResult.minSubtree;
+        if (leftResult->minSum <= result->minSum) {
+            result->minSum = leftResult->minSum;
+            result->minSubtree = leftResult->minSubtree;
         }
         
-        if (rightResult.minSum <= result.minSum) {
-            result.minSum = rightResult.minSum;
-            result.minSubtree = rightResult.minSubtree;
+        if (rightResult->minSum <= result->minSum) {
+            result->minSum = rightResult->minSum;
+            result->minSubtree = rightResult->minSubtree;
         }
         
         return result;
