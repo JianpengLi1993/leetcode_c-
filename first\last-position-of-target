@@ -77,3 +77,34 @@ public:
         return -1;
     }
 };
+
+题目3：若有序序列特别大，无法找到end，如何查找序列中的target元素
+
+class Solution{
+public:
+    searchBigSortedArray(ArrauRead reader, int target){
+        int count =1;
+        //不断往后找，找到大于target的2倍位置。
+        while(reader.get(count - 1) < target){
+            count = count *2;
+        }
+        int start = count/2,end=count -1;
+        while(start + 1 < end){
+            int mid = start + (end - start)/2;
+            if(reader.get(mid)<target){
+                start = mid
+            }else{
+                end = mid;
+            }
+        }
+        if(reader.get(start)==target){
+            return start;
+        }
+        if(reader.get(end)==target){
+            return end;
+        }
+        
+        return -1;
+    }
+}
+
