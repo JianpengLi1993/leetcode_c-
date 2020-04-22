@@ -1,0 +1,64 @@
+/*
+归并排序利用了分治的思想来对序列进行排序。对一个长为 n 的待排序的序列，我们将其分解成两个长度为 n/2 的子序列。
+每次先递归调用函数使两个子序列有序，然后我们再线性合并两个有序的子序列使整个序列有序。
+
+算法:
+定义 mergeSort(nums, l, r) 函数表示对 nums 数组里 [l,r]的部分进行排序，整个函数流程如下：
+
+递归调用函数 mergeSort(nums, l, mid) 对 nums 数组里 [l,mid] 部分进行排序。
+
+递归调用函数 mergeSort(nums, mid + 1, r) 对 nums 数组里 [mid+1,r] 部分进行排序。
+
+此时 nums 数组里 [l,mid] 和 [mid+1,r] 两个区间已经有序，我们对两个有序区间线性归并即可使 nums 数组里 [l,r] 的部分有序。
+线性归并的过程并不难理解，由于两个区间均有序，所以我们维护两个指针 i 和 j 表示当前考虑到 [l,mid] 里的第 i 个位置和 [mid+1,r]的第 j 个位置。
+如果 nums[i] < nums[j] ，那么我们就将 nums[i] 放入临时数组 tmp 中并让 i += 1 ，即指针往后移。
+   否则我们就将 nums[j] 放入临时数组 tmp 中并让 j += 1 。
+如果有一个指针已经移到了区间的末尾，那么就把另一个区间里的数按顺序加入 tmp 数组中即可。
+这样能保证我们每次都是让两个区间中较小的数加入临时数组里，那么整个归并过程结束后 [l,r]即为有序的。
+
+*/
+
+class Solution {
+    vector<int> tmp;
+    //1.确定递归函数的作用：将区间[start,end]进行归并排序，即先将[start，end]分为[start, mid] + [mid + 1, end]两个区间，分别排序
+    //再将两个排序好的区间整合回原数组中。
+    void mergeSort(vector<int>& nums, int start, int end) {
+        //3.确定出口
+        if (start >= end) 
+            return;
+        int mid = (start + end) >> 1;
+        //2.1分治，分别对两个区间进行递归排序
+        mergeSort(nums, start, mid);
+        mergeSort(nums, mid + 1, end);
+        //2.2整合，将两个排序好的区间进行归并整合。
+        merge(nums, start, end, mid);
+    }
+    //整合算法：利用一个临时数组进行归并。
+    void merge(vector<int>& nums,int start, int end, int mid){
+        int leftIndex = start;
+        int rightIndex = mid+1;
+        int tempIndex = start;
+        while(leftIndex<=mid && rightIndex <= end){
+            if(nums[leftIndex]<nums[rightIndex]){
+                tmp[tempIndex++]=nums[leftIndex++];
+            }else{
+                tmp[tempIndex++]=nums[rightIndex++];
+            }
+        }
+        while(leftIndex<=mid){
+            tmp[tempIndex++]=nums[leftIndex++];
+        }
+        while(rightIndex<=end){
+            tmp[tempIndex++]=nums[rightIndex++];
+        }
+        for(int i = start; i<=end;i++){
+            nums[i]=tmp[i];
+        }
+    }
+public:
+    vector<int> sortArray(vector<int>& nums) {
+        tmp.resize((int)nums.size(), 0);
+        mergeSort(nums, 0, (int)nums.size() - 1);
+        return nums;
+    }
+};
