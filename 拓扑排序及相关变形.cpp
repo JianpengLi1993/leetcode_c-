@@ -65,6 +65,8 @@ public:
 **另外有题目问是否只包含一条拓扑序列，是指queue序列是否时时刻刻只有一个节点在队列中，也就是每一次遍历后只有一个节点入度为0；
 还要判断这个拓扑序列与org是否一一相等。
 https://www.lintcode.com/problem/sequence-reconstruction/。
+答案：
+https://www.jianshu.com/p/cf0bc9a6f252。
 
 
         // 因为是唯一构成，所以每个元素的先序应该只有一个，即度为1
