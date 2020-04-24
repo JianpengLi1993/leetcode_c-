@@ -58,8 +58,63 @@ public:
     }
 };
 
-
 方案2：
+分治法
+class Solution {
+    /**
+     * @param lists: a list of ListNode
+     * @return: The head of one sorted list.
+     */
+    public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        if (lists.size() == 0) {
+            return NULL;
+        }
+        return mergeHelper(lists, 0, lists.size() - 1);
+    }
+    
+    //1.返回start到end之间的序列进行排序为一个序列的头结点的指针
+    ListNode* mergeHelper(vector<ListNode*>& lists, int start, int end) {
+        if (start == end) {
+            return lists[start];
+        }
+        
+        int mid = start + (end - start) / 2;
+        //2.1 分治
+        ListNode* left = mergeHelper(lists, start, mid);
+        ListNode* right = mergeHelper(lists, mid + 1, end);
+        //2.2 整合
+        return mergeTwoLists(left, right);
+    }
+    //整合两个有序序列成一个有序链表。
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        //对于链表，往往都是这样，设定一个固定的头，再找一个移动指针。
+        ListNode* dummy = new ListNode(-1);
+        ListNode* tail = dummy;
+        while (list1 != NULL && list2 != NULL) {
+            if (list1->val < list2->val) {
+                tail->next = list1;
+                tail = list1;
+                list1 = list1->next;
+            } else {
+                tail->next = list2;
+                tail = list2;
+                list2 = list2->next;
+            }
+        }
+        if (list1 != NULL) {
+            tail->next = list1;
+        } else {
+            tail->next = list2;
+        }
+        //返回的是next指针
+        return dummy->next;
+    }
+};
+
+
+
+方案3：
 //////////////////////////////////////////////////////
 在做这个题前，我们肯定会遇到 21. 合并两个有序链表 这道题，不了解的伙伴儿可以先移步了解一下。
 简单的说，合并两个有序链表可以使用迭代或者递归来完成，思路是一样的；这里就不多做介绍了。
