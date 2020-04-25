@@ -52,24 +52,24 @@ public:
 
 		for (int i = start; i < candidates.size() && target - candidates[i] >= 0; i++) {
 			/*这里等效于下面的while循环作用
-            if (i > start&& candidates[i] == candidates[i - 1])
+            		if (i != 0 && candidates[i] == candidates[i - 1])
 			    continue;
-            */
+            		*/
 			path.push_back(candidates[i]);
 			// 元素不可重复利用，使用下一个即i+1
 			DFS(i + 1, target - candidates[i]);
 			path.pop_back();
-      while(i < candidates.size() - 1 && candidates[i] == candidates[i+1]){
-           i++;        
-      }
+      			while(i < candidates.size() - 1 && candidates[i] == candidates[i+1]){
+           		    i++;        
+      			}
 		}
 	}
 
 	vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
-		   sort(candidates.begin(), candidates.end());
-		   this->candidates = candidates;
-		   DFS(0, target);
-		   return res;
+		sort(candidates.begin(), candidates.end());
+		this->candidates = candidates;
+		DFS(0, target);
+		return res;
 	}
 };
 
@@ -132,8 +132,8 @@ public:
             //在排序的基础上，通过这一步，在有多个相同元素是，保证同一层的分支中，只让挨着的若干相同元素中的"第一个元素"进行向下发展
             //确保不会出现重复组合， 
             //其实，我们要确保只约束同一层，不会影响下一层，就是要保证 i != start,所以这个while放在for的最后，确保了这一点，
-            //而如果我们习惯先判断，再执行，可以等效为在for循环中最开始位置加：
-            //if(i != start && candidates[i] == candidates[i - 1]){continue;}
+            //而如果我们习惯先判断，再执行，可以等效为在for循环中最开始位置加：这里的i != 0主要是边界检测，防止i-1出现负值；
+            //if(i != 0 && candidates[i] == candidates[i - 1]){continue;}
             
             while(i < end && candidates[i] == candidates[i+1]){
                 i++;        
