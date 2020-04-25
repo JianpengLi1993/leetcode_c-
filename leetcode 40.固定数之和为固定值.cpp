@@ -52,7 +52,7 @@ public:
 
 		for (int i = start; i < candidates.size() && target - candidates[i] >= 0; i++) {
 			/*这里等效于下面的while循环作用
-            		if (i != 0 && candidates[i] == candidates[i - 1])
+            		if (i != start && candidates[i] == candidates[i - 1])
 			    continue;
             		*/
 			path.push_back(candidates[i]);
@@ -132,8 +132,9 @@ public:
             //在排序的基础上，通过这一步，在有多个相同元素是，保证同一层的分支中，只让挨着的若干相同元素中的"第一个元素"进行向下发展
             //确保不会出现重复组合， 
             //其实，我们要确保只约束同一层，不会影响下一层，就是要保证 i != start,所以这个while放在for的最后，确保了这一点，
-            //而如果我们习惯先判断，再执行，可以等效为在for循环中最开始位置加：这里的i != 0主要是边界检测，防止i-1出现负值；
-            //if(i != 0 && candidates[i] == candidates[i - 1]){continue;}
+            //而如果我们习惯先判断，再执行，可以等效为在for循环中最开始位置加：这里的i != start一方面是边界检测，防止i-1出现负值；
+	    //另一方面是当前层的第一个元素是可以和上一层的元素相同的，此时相当于两层的元素恰好相同，而不是同一层出现多个相同数字的组合。
+            //if(i != start && candidates[i] == candidates[i - 1]){continue;}
             
             while(i < end && candidates[i] == candidates[i+1]){
                 i++;        
