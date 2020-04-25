@@ -112,6 +112,7 @@ leetcode 40的变形，要求组合中元素的个数也为固定值
 ]
 
 /*****************************************************************/
+方案一：递归DFS
 
 class Solution {
 public: 
@@ -209,6 +210,127 @@ public:
         }
         ans=setToVec(anset);
         return ans;
+    }
+};
+
+方案3：双指针法，局限是目前只用在3数之和；但是这个方法时唯一AC的方案，上面两个都超时了在3数之和问题上，至于其他n数之和会不会超时，不确定。
+#############################################
+首先对数组进行排序，排序后固定一个数 nums[i]，再使用左右指针指向 nums[i]后面的两端，
+数字分别为 nums[L]和 nums[R]，计算三个数的和 sum 判断是否满足为 0，满足则添加进结果集;
+如果 nums[i] 大于 0，则三数之和必然无法等于 0，结束循环;
+如果 nums[i] == nums[i−1]，则说明该数字重复，会导致结果重复，所以应该跳过;
+当 sum == 0 时，nums[L] == nums[L+1] 则会导致结果重复，应该跳过，L++;
+当 sum == 0 时，nums[R] == nums[R−1] 则会导致结果重复，应该跳过，R−−;
+时间复杂度：O(n2)O(n^2)O(n2)，nnn 为数组长度
+
+#############################################
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int> > ret;
+        int len = nums.size();
+        sort(nums.begin(),nums.end());//sort the input，确保我们找的目标数是从负数到0之间。
+        for(int i=0;i<len;i++){
+            //目标数不可能大于0；
+            if(nums[i]>0){
+                return ret;
+            }
+            //这里是从目标数的角度去重，即不可以为同一个目标做查找组合。
+            if(i>0 && nums[i]==nums[i-1]){
+                continue;
+            }
+               
+            //左右两个指针，相加判断是否等于目标数的相反数，并根据比较结果进行对应的移动；
+            int L=i+1;
+            int R=len-1;
+            while(L<R){
+                if(nums[i]+nums[L]+nums[R]==0){
+                    ret.push_back({nums[i],nums[L],nums[R]});
+                    //在已经有了一个确定结果之后，再在指针区域内进行去重跳转，
+                    while(L<R && nums[L]==nums[L+1])
+                        L=L+1;
+                    while(L<R && nums[R]==nums[R-1])
+                        R=R-1;
+                    L=L+1;
+                    R=R-1;
+                }
+                //没有结果之前，要根据比较结果大小去移动指针位置；
+                else if(nums[i]+nums[L]+nums[R]>0)
+                    R=R-1;
+                else
+                    L=L+1;
+            }    
+
+        }
+        return ret;
+    }
+};
+#演变为4数之和：
+############################
+ 四数之和与前面三数之和的思路几乎是一样的，嗝。（刚好前些天才写了三数之和的题解）
+ 如果前面的三数之和会做了的话，这里其实就是在前面的基础上多添加一个遍历的指针而已。
+ 会做三数之和的可以不用看下面的了。。
+  
+ 使用四个指针(a<b<c<d)。固定最小的a和b在左边，c=b+1,d=_size-1 移动两个指针包夹求解。
+ 保存使得nums[a]+nums[b]+nums[c]+nums[d]==target的解。偏大时d左移，偏小时c右移。c和d相
+ 遇时，表示以当前的a和b为最小值的解已经全部求得。b++,进入下一轮循环b循环，当b循环结束后。
+ a++，进入下一轮a循环。 即(a在最外层循环，里面嵌套b循环，再嵌套双指针c,d包夹求解)。
+
+ 上面的解法存在重复解的原因是因为移动指针时可能出现重复数字的情况。所以我们要确保移动指针后，
+ 对应的数字要发生改变才行哦。
+############################
+class Solution{
+	public: 
+	vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort(nums.begin(),nums.end());
+        vector<vector<int> > res;
+        if(nums.size()<4)
+        return res;
+        int a,b,c,d,_size=nums.size();
+        for(a=0;a<=_size-4;a++){
+        	if(a>0&&nums[a]==nums[a-1]) continue;      //确保nums[a] 改变了
+        	for(b=a+1;b<=_size-3;b++){
+        		if(b>a+1&&nums[b]==nums[b-1])continue;   //确保nums[b] 改变了
+        		c=b+1,d=_size-1;
+        		while(c<d){
+        			if(nums[a]+nums[b]+nums[c]+nums[d]<target)
+        			    c++;
+        			else if(nums[a]+nums[b]+nums[c]+nums[d]>target)
+        			    d--;
+        			else{
+        				res.push_back({nums[a],nums[b],nums[c],nums[d]});
+        				while(c<d&&nums[c+1]==nums[c])      //确保nums[c] 改变了
+        				    c++;
+        				while(c<d&&nums[d-1]==nums[d])      //确保nums[d] 改变了
+        				    d--;
+        				c++;
+        				d--;
+					}
+				}
+			}
+		}
+		return res;
+    }
+};
+
+
+方案4：hashMap针对2数之和
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+
+        unordered_map<int,int> m;
+
+        for(int i=0;i<nums.size();i++)
+            m[nums[i]]=i;   //向map中添加元素
+        
+        for(int i=0;i<nums.size();i++)
+        {
+            if(m.find(target-nums[i])!=m.end()&&m[target-nums[i]]!=i)//m中存在对应的键值，并且不为i
+                return {i,m[target-nums[i]]};
+        }
+        return {};
     }
 };
 
