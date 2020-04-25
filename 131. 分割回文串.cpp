@@ -32,30 +32,59 @@ public:
     vector<vector<string>> partition(string &s) {
         vector<vector<string>> ret;
         vector<string> tmp;
-        dfs(s, tmp, ret); 
+        //预处理回文判定数组；
+        getIsPalindrome(s);
+        dfs(s, 0, tmp, ret); 
         return ret;
     }
     
 private:
-    //s表示的是还需要切分的字符串，tmp表示之前切好的若干字串存放好的数组，
-    void dfs(const string &s, vector<string> &tmp, vector<vector<string>> &ret) {
+   vector<vector<bool>> isPalindrome;
+    //利用区间动态规划，计算一个回文真值数组
+    void getIsPalindrome(string s) {
+        vector<bool> temp(s.size(), false);
+        vector<vector<bool>> isPalindrome(s.size(), temp);
         int n = s.size();
-        if (n == 0) {
+        
+        //一个元素的字串
+        for (int i = 0; i < n; i++) {
+            isPalindrome[i][i] = true;
+        }
+        //两个元素的字串
+        for (int i = 0; i < n - 1; i++) {
+            isPalindrome[i][i + 1] = (s[i] == s[i + 1]);
+        }
+        //双指针，依据之前的数组元素，逐渐向两端扩展，
+        //i的确立是由大到小，从右到左，所以i是倒序；j的确立是有小到大，从左到右，所以j是顺序；
+        for (int i = n - 3; i >= 0; i--) {
+            for (int j = i + 2; j < n; j++) {
+                isPalindrome[i][j] = isPalindrome[i + 1][j - 1] && s[i] == s[j];
+            }
+        }
+        this->isPalindrome = isPalindrome;
+    }
+
+
+    //s表示的是还需要切分的字符串，tmp表示之前切好的若干字串存放好的数组，
+    void dfs(const string &s, int startIndex, vector<string> &tmp, vector<vector<string>> &ret) {
+        int n = s.size();
+        if (n == startIndex) {
             ret.push_back(tmp);
             return ;
         }
         
-        for (int i = 0; i < n; i++) {
+        for (int i = startIndex; i < n; i++) {
             //substr(pos, len);
-            if (isPalindrome(s.substr(0, i + 1))) {
-                tmp.push_back(s.substr(0, i + 1));
-                dfs(s.substr(i + 1), tmp, ret);
+            //isPalindromeFun(s.substr(startIndex, i - startIndex + 1))复杂度更高
+            if (isPalindrome[startIndex][i]) {
+                tmp.push_back(s.substr(startIndex, i - startIndex + 1));
+                dfs(s, i + 1, tmp, ret);
                 tmp.pop_back();
             }    
         }
     }
-    //判断是否是回文
-    bool isPalindrome(const string &s) {
+    //判断是否是回文的函数
+    bool isPalindromeFun(const string &s) {
         for (int l = 0, r = s.size() - 1; l < r; l++, r--) {
             if (s[l] != s[r]) {
                 return false;
@@ -63,6 +92,8 @@ private:
         } 
         return true;
     }
+    
+    
 };
 
 //求全部子集的方案如下:
