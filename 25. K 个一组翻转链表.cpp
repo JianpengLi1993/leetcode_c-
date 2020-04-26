@@ -33,21 +33,23 @@ class Solution {
      */
     public:
         ListNode* reverseKGroup(ListNode* head, int k) {
-            //下面两句，外加return dummy.next;是大部分链表题目的规范用法，
-            //使得所有操作都是针对dummy后边的节点，dummy本身不动，dummy->next就可以直接找到后面的头
-            ListNode* dummy = new ListNode(-1);;
-            dummy->next = head;
+             //下面两句，外加return dummy.next;是大部分链表题目的规范用法，
+            //使得所有操作都是针对dummy后边的节点，dummy本身不动，dummy.next就可以直接找到后面的头
+            //而且这样生成的dummy是节点而非指针，存放在stack中，会被回收；不像new一个节点，还需要考虑释放
+            //ListNode *dummy = new ListNode(-1);
+            ListNode dummy(-1);
+            dummy.next = head;
             ///Dummy->1->2->3->4->5->6->7->8->9
             ///==>
             ///Dummy->[3->2->1]->[6->5->4]->8->9
-            ListNode* prev = dummy;
+            ListNode* prev = &dummy;
             while (prev != NULL) {
                 //返回的都是翻转操作的那一段完成后的最后一个节点，作为下一侧翻转开始的前一个节点，
                 //这样才可以将多段翻转之间相邻的头尾连接上
                 prev = reverseK(prev, k);
             }
             
-            return dummy->next;
+            return dummy.next;
         }
     
         //before： head ->[ n1 -> n2 ... nk ]-> nk+1
