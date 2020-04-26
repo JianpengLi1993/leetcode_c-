@@ -33,7 +33,7 @@ class Solution {
      */
     public:
         ListNode* reverseKGroup(ListNode* head, int k) {
-             //下面两句，外加return dummy.next;是大部分链表题目的规范用法，
+            //下面两句，外加return dummy.next;链表结构发生变化时就需要 Dummy Node,是大部分链表题目的规范用法，
             //使得所有操作都是针对dummy后边的节点，dummy本身不动，dummy.next就可以直接找到后面的头
             //而且这样生成的dummy是节点而非指针，存放在stack中，会被回收；不像new一个节点，还需要考虑释放
             //ListNode *dummy = new ListNode(-1);
