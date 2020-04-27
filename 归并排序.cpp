@@ -95,6 +95,7 @@ public:
         //若为偶数个，slow位于中间两个数的前一个位置，fast位于倒数第二个不为null的节点处；
         ListNode* fast = head;
         ListNode* slow = head;
+        //由于fast开始是从头开始的，所以循环的判定要包括fast->next和fast->next->next两步是否有null;
         while(fast -> next != NULL && fast -> next -> next != NULL){
             fast = fast -> next;
             fast = fast -> next;
