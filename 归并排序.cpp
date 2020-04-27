@@ -90,21 +90,24 @@ public:
             return head;
         }
         //这里利用快慢指针的算法来寻找切分中点。
-        //1.fast和slow初始化同一起点，结束循环时，slow的位置分原序列是奇数个还是偶数个，
+        //1.当fast和slow初始化同一起点，结束循环时，slow的位置分原序列是奇数个还是偶数个，
         //若是奇数个，slow位于正中间，fast位于最后一个不为null的节点处；
-        //若为偶数个，slow位于中间两个数的前一个位置，fast位于倒数第二个不为null的节点处；
+        //若为偶数个，slow位于中间两个数的后一个位置，fast位于倒数第一个节点后面的null节点处；
         ListNode* fast = head;
         ListNode* slow = head;
-        //由于fast开始是从头开始的，所以循环的判定要包括fast->next和fast->next->next两步是否有null;
-        while(fast -> next != NULL && fast -> next -> next != NULL){
+        ListNode* prevSlow = slow;
+        //统一采用这个循环判断，这样当链表只有两个节点时，仍然能进入这个循环，
+        while(fast != NULL && fast -> next != NULL){
             fast = fast -> next;
             fast = fast -> next;
+            prevSlow = slow;
             slow = slow -> next;
         }
-        //这里把slow->next当做中间结点mid，并把slow->next置为null,这样相当于把链表分为[start,mid-1]、[mid,end]两段。
-        ListNode* mid = slow -> next;
-        slow -> next = NULL;
-        
+        //这里把slow当做中间结点mid，并利用prevSlow将链表分为[start,mid-1]、[mid,end]两段。
+        ListNode* mid = slow;
+        if(prevSlow->next != NULL)
+            prevSlow -> next = NULL;
+
         //继续递归
         ListNode* list1 = sortList(head);
         ListNode* list2 = sortList(mid);
@@ -112,6 +115,7 @@ public:
         ListNode* sorted = merge(list1 , list2);
         return sorted;
     }
+    
     ListNode* merge(ListNode* list1 , ListNode* list2){
         if(list1 == NULL) return list2;
         if(list2 == NULL) return list1;
@@ -138,6 +142,7 @@ public:
         return dummy.next;
     }
 };
+
 
 延伸问题：
 合并两个排序的整数数组A和B变成一个新的数组。且在原数组上修改，A=[1,2,3,Null,Null],B=[4,5].
