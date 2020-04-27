@@ -17,13 +17,14 @@
 这样能保证我们每次都是让两个区间中较小的数加入临时数组里，那么整个归并过程结束后 [l,r]即为有序的。
 
 */
+**序列是数组的情况：
 
 class Solution {
     vector<int> tmp;
     //1.确定递归函数的作用：将区间[start,end]进行归并排序，即先将[start，end]分为[start, mid] + [mid + 1, end]两个区间，分别排序
     //再将两个排序好的区间整合回原数组中。
     void mergeSort(vector<int>& nums, int start, int end) {
-        //3.确定出口
+        //3.确定出口,这里包括两种情况，start=end,即序列只有一个元素，对应左半边，start>end,即序列为空,对应右半边；
         if (start >= end) 
             return;
         int mid = (start + end) >> 1;
@@ -62,12 +63,85 @@ public:
         return nums;
     }
 };
+ 
+**序列是链表的情况：
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
 
+
+class Solution {
+public:
+    /**
+     * @param head: The first node of linked list.
+     * @return: You should return the head of the sorted linked list,
+                    using constant space complexity.
+     */
+     //还是采用归并排序思想，找到中点，一分为二，左右各自递归
+    ListNode *sortList(ListNode *head) {
+        // write your code here
+        if(head == NULL) return head;
+        if(head -> next == NULL){
+            return head;
+        }
+        //这里利用快慢指针的算法来寻找切分中点。
+        //1.fast和slow初始化同一起点，结束循环时，slow的位置分原序列是奇数个还是偶数个，
+        //若是奇数个，slow位于正中间，fast位于最后一个不为null的节点处；
+        //若为偶数个，slow位于中间两个数的前一个位置，fast位于倒数第二个不为null的节点处；
+        ListNode* fast = head;
+        ListNode* slow = head;
+        while(fast -> next != NULL && fast -> next -> next != NULL){
+            fast = fast -> next;
+            fast = fast -> next;
+            slow = slow -> next;
+        }
+        //这里把slow->next当做中间结点mid，并把slow->next置为null,这样相当于把链表分为[start,mid-1]、[mid,end]两段。
+        ListNode* mid = slow -> next;
+        slow -> next = NULL;
+        
+        //继续递归
+        ListNode* list1 = sortList(head);
+        ListNode* list2 = sortList(mid);
+        
+        ListNode* sorted = merge(list1 , list2);
+        return sorted;
+    }
+    ListNode* merge(ListNode* list1 , ListNode* list2){
+        if(list1 == NULL) return list2;
+        if(list2 == NULL) return list1;
+        //涉及到链表结构发生变化，仍然使用dummy
+        ListNode dummy(-1);
+        ListNode* tmp;
+        tmp=&dummy;
+        
+        
+        while(list1 != NULL && list2 != NULL){
+            if(list1 -> val < list2 -> val){
+                tmp -> next = list1;
+                tmp = list1;
+                list1 = list1 -> next;
+            }else{
+                tmp -> next = list2;
+                tmp = list2;
+                list2 = list2 -> next;
+            }
+        }
+        if(list1 != NULL) tmp -> next = list1;
+        if(list2 != NULL) tmp -> next = list2;
+        
+        return dummy.next;
+    }
+};
 
 延伸问题：
-合并两个排序的整数数组A和B变成一个新的数组。且在原数组上修改
+合并两个排序的整数数组A和B变成一个新的数组。且在原数组上修改，A=[1,2,3,Null,Null],B=[4,5].
 分析:
-    涉及两个有序数组合并,设置i和j双指针,分别从两个数组的尾部想头部移动,
+    涉及两个有序数组合并,设置i和j双指针,分别从两个数组的尾部想头部移动,即从大到小排序，这是因为这样操作不涉及数组的整体移动，
 并判断A[i]和B[j]的大小关系,从而保证最终数组有序,同时每次index从尾部向头部移动。
 
 class Solution {
