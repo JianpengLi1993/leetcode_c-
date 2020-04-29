@@ -49,7 +49,7 @@ public:
     }
     
 private:
-    //构建邻接链表
+    //本质上是无向图，一条边的两个节点互为邻居，构建邻接链表
     adjacentList initializeGraph(int n, vector<vector<int>>& edges) {
         adjacentList graph;
         
