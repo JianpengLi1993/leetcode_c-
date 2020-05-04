@@ -19,6 +19,11 @@
 每次取出队头元素，存入队头元素*2、队头元素*3、队头元素*5
 但注意，像12这个元素，可由4乘3得到，也可由6乘2得到，所以要注意去重
 
+1 //升序队列，小顶堆
+2 priority_queue <int,vector<int>,greater<int> > q;
+3 //降序队列，大顶堆(默认是大顶堆)
+4 priority_queue <int,vector<int>,less<int> >q;
+
 class Solution {
 public:
     /*
